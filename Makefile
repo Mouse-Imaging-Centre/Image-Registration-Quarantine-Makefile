@@ -211,7 +211,7 @@ NUMPY_VER               := 1.6.1
 SCIPY_VER               := 0.9.0
 R_VER                   := 2.13.1
 XFMAVG_VER              := 1.0.0
-RMINC_VER               := 0.5.10
+# RMINC_VER               := 0.5.10
 MBM_VER                 := 0.6.1
 TAGTOXFM_BSPLINE_VER    := 1.0
 COIN_3D_VER             := 3.1.3
@@ -281,11 +281,12 @@ $(BUILD_DIR)/src/numpy-$(NUMPY_VER).tar.gz \
 $(BUILD_DIR)/src/scipy-$(SCIPY_VER).tar.gz \
 $(BUILD_DIR)/src/R-$(R_VER).tar.gz \
 $(BUILD_DIR)/src/MBM-$(MBM_VER).tar.gz \
-$(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz \
 $(BUILD_DIR)/src/tagtoxfm_bspline_$(TAGTOXFM_BSPLINE_VER).tar.gz \
 $(BUILD_DIR)/src/Coin-$(COIN_3D_VER).tar.gz \
 $(BUILD_DIR)/src/Quarter-$(QUARTER_VER).tar.gz \
 $(BUILD_DIR)/src/brain-view2-$(BRAIN_VIEW2_VER).tar.gz
+
+# $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz \
 
 # *****************************************************************************
 # Install target files
@@ -1090,12 +1091,22 @@ $(xfmavg) : $(BUILD_DIR)/src/xfmavg
 	cp $(BUILD_DIR)/src/xfmavg $(INSTALL_DIR)/bin/xfmavg && \
 	chmod a+x $(INSTALL_DIR)/bin/xfmavg
 
-$(RMINC) : $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz
+# $(RMINC) : $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz
+# 	cd $(BUILD_DIR)/src/ && \
+# 	export LD_LIBRARY_PATH=$(INSTALL_DIR)/lib && \
+# 	$(INSTALL_DIR)/bin/R CMD INSTALL RMINC-$(RMINC_VER).tar.gz \
+# 	--configure-args="--with-build-path=$(INSTALL_DIR)" && \
+# 	unset LD_LIBRARY_PATH
+
+$(RMINC) : 
 	cd $(BUILD_DIR)/src/ && \
+	if [ ! -d rminc ]; then bzr branch lp:rminc/trunk rminc; else echo rminc directory exists already; fi && \
+	cd rminc; ./autogen.sh; cd .. && \
 	export LD_LIBRARY_PATH=$(INSTALL_DIR)/lib && \
-	$(INSTALL_DIR)/bin/R CMD INSTALL RMINC-$(RMINC_VER).tar.gz \
+	$(INSTALL_DIR)/bin/R CMD INSTALL rminc \
 	--configure-args="--with-build-path=$(INSTALL_DIR)" && \
 	unset LD_LIBRARY_PATH
+
 
 $(MBM) : $(BUILD_DIR)/src/MBM-$(MBM_VER)
 	cd $(BUILD_DIR)/src/MBM-$(MBM_VER) && \
