@@ -385,9 +385,9 @@ models : $(output_dirs) mni-models_average305-lin \
 
 minc-extra : $(output_dirs) fftw getopt_tabular oobicpl pcre pcrepp 
 
-MICe : $(output_dirs) coin3d bicinventor mincANTS mice_minc_tools mouse_thickness perl_test_files python pyminc numpy scipy R xfmavg RMINC MBM tagtoxfm_bspline quarter brain_view2
+MICe : $(output_dirs) coin3d bicinventor mincANTS mice_minc_tools mouse_thickness perl_test_files python pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
 
-MICe-fuzzy: $(output_dirs) laplacian_thickness pmp
+MICe-fuzzy: $(output_dirs) laplacian_thickness pmp MBM 
 
 full-MICe-quarantine : minc-full visual minc-extra MICe
 
@@ -717,9 +717,9 @@ $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz :
 	$(WGET)  --no-check-certificate  https://wiki.phenogenomics.ca/download/attachments/1868718/RMINC_$(RMINC_VER).tar.gz \
  -O $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz
 
-$(BUILD_DIR)/src/MBM-$(MBM_VER).tar.gz :
-	$(WGET) --no-check-certificate  https://wiki.phenogenomics.ca/download/attachments/1868718/MBM-$(MBM_VER).tar.gz \
- -O $(BUILD_DIR)/src/MBM-$(MBM_VER).tar.gz
+# $(BUILD_DIR)/src/MBM-$(MBM_VER).tar.gz :
+# 	$(WGET) --no-check-certificate  https://wiki.phenogenomics.ca/download/attachments/1868718/MBM-$(MBM_VER).tar.gz \
+#  -O $(BUILD_DIR)/src/MBM-$(MBM_VER).tar.gz
 
 $(BUILD_DIR)/src/tagtoxfm_bspline_$(TAGTOXFM_BSPLINE_VER).tar.gz :
 	$(WGET) --no-check-certificate  https://wiki.phenogenomics.ca/download/attachments/1868718/tagtoxfm_bspline_$(TAGTOXFM_BSPLINE_VER).tar.gz \
