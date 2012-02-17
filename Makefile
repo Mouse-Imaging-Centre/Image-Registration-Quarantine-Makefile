@@ -770,7 +770,7 @@ $(hdf5) : $(BUILD_DIR)/src/hdf5-$(HDF5_VER)
 	cd $(BUILD_DIR)/src/hdf5-$(HDF5_VER) && \
 	./configure --prefix=$(INSTALL_DIR) \
 	            --with-pic \
-	            --disable-cxx \
+	            --enable-cxx \
 	            --disable-fortran  \
 	            --disable-hl && \
 	make clean && \
