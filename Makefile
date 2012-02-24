@@ -671,7 +671,9 @@ $(BUILD_DIR)/src/bicInventor-$(BICINVENTOR_VER).tar.gz :
 
 $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER).tar.gz :
 	$(WGET) http://www.bic.mni.mcgill.ca/~vfonov/software/mincANTS_$(MINCANTS_VER).tar.gz \
- -O $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER).tar.gz
+ -O $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER).tar.gz && \
+	$(WGET) --no-check-certificate https://wiki.phenogenomics.ca/download/attachments/1868718/patch_WarpVTKPolyDataMultiTransform_issue.diff \
+ -O $(BUILD_DIR)/src/patch_WarpVTKPolyDataMultiTransform_issue.diff
 
 $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz :
 	$(WGET) --no-check-certificate https://wiki.phenogenomics.ca/download/attachments/1868718/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz \
@@ -1302,7 +1304,10 @@ $(ezminc) : $(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER) $(minc) $(itk) $(cmake)
 #
 
 $(mincANTS) : $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER) $(minc) $(itk) $(cmake) $(ezminc)
+	cd $(BUILD_DIR)/src/ && \
+	cp $(BUILD_DIR)/src/patch_WarpVTKPolyDataMultiTransform_issue.diff $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER_SHORT)/Examples && \
 	cd $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER_SHORT)/Examples && \
+	patch < patch_WarpVTKPolyDataMultiTransform_issue.diff && \
 	$(CMAKE)  \
       -D BUILD_TESTING:BOOL=ON \
       -D CMAKE_BUILD_TYPE:STRING=Release \
