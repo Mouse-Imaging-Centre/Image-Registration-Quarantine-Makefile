@@ -510,7 +510,7 @@ $(BUILD_DIR)/src/netcdf-$(NETCDF_VER).tar.gz :
  -O $(BUILD_DIR)/src/netcdf-$(NETCDF_VER).tar.gz
 
 $(BUILD_DIR)/src/hdf5-$(HDF5_VER).tar.gz : 
-	$(WGET) http://www.hdfgroup.org/ftp/HDF5/hdf5-1.8.7/src/hdf5-$(HDF5_VER).tar.gz \
+	$(WGET) http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.7/src/hdf5-$(HDF5_VER).tar.gz \
  -O $(BUILD_DIR)/src/hdf5-$(HDF5_VER).tar.gz
 
 $(BUILD_DIR)/src/mcvaneede-minc-$(MINC_VER).tar.gz : 
@@ -590,7 +590,7 @@ $(BUILD_DIR)/src/cmake-$(CMAKE_VER).tar.gz :
  -O $(BUILD_DIR)/src/cmake-$(CMAKE_VER).tar.gz
 
 $(BUILD_DIR)/src/gsl-$(GSL_VER).tar.gz :
-	$(WGET) http://mirrors.ibiblio.org/pub/mirrors/gnu/ftp/gnu/gsl/gsl-$(GSL_VER).tar.gz \
+	$(WGET) http://ftp.gnu.org/gnu/gsl/gsl-$(GSL_VER).tar.gz \
  -O $(BUILD_DIR)/src/gsl-$(GSL_VER).tar.gz
 
 $(BUILD_DIR)/src/Getopt-Tabular-$(GETOPT_TABULAR_VER).tar.gz : 
