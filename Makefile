@@ -1354,10 +1354,10 @@ list :
 environment : $(INSTALL_DIR)/environment.sh $(INSTALL_DIR)/environment.csh
 
 $(INSTALL_DIR)/environment.sh : 
-	echo export PATH=$(INSTALL_DIR)/bin:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/usr/bin/X11:/usr/freeware/bin:/usr/etc:/usr/local/bin:/usr/pbs/bin:/bin \\nexport PERL5LIB=$(INSTALL_DIR)/perl \\nexport PYTHONPATH=$(INSTALL_DIR)/python/ \\nexport LD_LIBRARY_PATH=$(INSTALL_DIR)/lib:$(INSTALL_DIR)/lib/InsightToolkit/ \\n. /sge/default/common/settings.sh >$(INSTALL_DIR)/environment.sh
+	echo export PATH=$(INSTALL_DIR)/bin:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/usr/bin/X11:/usr/freeware/bin:/usr/etc:/usr/local/bin:/usr/pbs/bin:/bin \\nexport PERL5LIB=$(INSTALL_DIR)/perl \\nexport PYTHONPATH=$(INSTALL_DIR)/python/ \\nexport LD_LIBRARY_PATH=$(INSTALL_DIR)/lib:$(INSTALL_DIR)/lib/InsightToolkit/ \\nexport MINC_FORCE_V2=1 \\n. /sge/default/common/settings.sh >$(INSTALL_DIR)/environment.sh
 
 $(INSTALL_DIR)/environment.csh : 
-	echo setenv PATH $(INSTALL_DIR)/bin:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/usr/bin/X11:/usr/freeware/bin:/usr/etc:/usr/local/bin:/usr/pbs/bin:/bin \\nsetenv PERL5LIB $(INSTALL_DIR)/perl \\nsetenv PYTHONPATH $(INSTALL_DIR)/python/ \\nsetenv LD_LIBRARY_PATH $(INSTALL_DIR)/lib:$(INSTALL_DIR)/lib/InsightToolkit/ \\n. /sge/default/common/settings.csh >$(INSTALL_DIR)/environment.csh
+	echo setenv PATH $(INSTALL_DIR)/bin:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/usr/bin/X11:/usr/freeware/bin:/usr/etc:/usr/local/bin:/usr/pbs/bin:/bin \\nsetenv PERL5LIB $(INSTALL_DIR)/perl \\nsetenv PYTHONPATH $(INSTALL_DIR)/python/ \\nsetenv LD_LIBRARY_PATH $(INSTALL_DIR)/lib:$(INSTALL_DIR)/lib/InsightToolkit/ \\nsetenv MINC_FORCE_V2 1  \\n. /sge/default/common/settings.csh >$(INSTALL_DIR)/environment.csh
 
 
 # *****************************************************************************
