@@ -1,0 +1,4 @@
+2012-06-13 Matthijs van Eede <matthijs@phenogenomics.ca>
+  * changed R version from 2.13.1 to 2.15.0 (allows you to use the latest version of ggplot2)
+  * updated the changes related to the RMINC package, is now pulled from GitHub
+  * updated the mice-minc-tools package to fix issues with paths in ray_trace_crosshair

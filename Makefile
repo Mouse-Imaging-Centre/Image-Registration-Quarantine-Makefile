@@ -201,7 +201,7 @@ BICINVENTOR_VER         := 0.3.1
 LAPLACIAN_THICKNESS_VER := 1.1.2
 MINCANTS_VER            := 1p9_p1
 MINCANTS_VER_SHORT      := 1p9
-MICE_MINC_TOOLS_VER     := 0.1
+MICE_MINC_TOOLS_VER     := 0.2
 MOUSE_THICKNESS_VER     := 0.1
 PERL_TEST_FILES_VER     := 0.14
 PMP_VER                 := 0.7.10
@@ -209,7 +209,7 @@ PYTHON_VER              := 2.7.2
 PYMINC_VER              := 0.2
 NUMPY_VER               := 1.6.1
 SCIPY_VER               := 0.9.0
-R_VER                   := 2.13.1
+R_VER                   := 2.15.0
 XFMAVG_VER              := 1.0.0
 # RMINC_VER               := 0.5.10
 MBM_VER                 := 0.6.2
@@ -1017,6 +1017,7 @@ $(laplacian_thickness) : $(BUILD_DIR)/src/laplacian_thickness-$(LAPLACIAN_THICKN
 
 $(mice_minc_tools) : $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER)
 	cd $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER) && \
+	./autogen.sh && \
 	./configure --prefix=$(INSTALL_DIR) --with-build-path=$(INSTALL_DIR) --with-minc2 && \
 	make clean   && \
 	make $(PARALLEL_BUILD)  && \
@@ -1102,7 +1103,7 @@ $(xfmavg) : $(BUILD_DIR)/src/xfmavg
 
 $(RMINC) : 
 	cd $(BUILD_DIR)/src/ && \
-	if [ ! -d rminc ]; then bzr branch lp:rminc/trunk rminc; else echo rminc directory exists already; fi && \
+	if [ ! -d rminc ]; then git clone https://github.com/mcvaneede/RMINC.git rminc; else echo rminc directory exists already; fi && \
 	cd rminc; ./autogen.sh; cd .. && \
 	export LD_LIBRARY_PATH=$(INSTALL_DIR)/lib && \
 	$(INSTALL_DIR)/bin/R CMD INSTALL rminc \
