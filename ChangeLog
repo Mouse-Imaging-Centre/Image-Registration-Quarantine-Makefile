@@ -1,6 +1,7 @@
 2012-06-14 Matthijs van Eede <matthijs@phenogenomics.ca>
   * changed the source location of PCRE 8.12 (thanks to Kieran Short)
   * added --enable-R-shlib to the configure command of R to allow GUI software (such as Rstudio) to work with R (thanks to Kieran Short)
+  * added some retry flags to wget
 
 2012-06-13 Matthijs van Eede <matthijs@phenogenomics.ca>
   * changed R version from 2.13.1 to 2.15.0 (allows you to use the latest version of ggplot2)

@@ -157,8 +157,8 @@ INSTALL_DIR?=$(shell pwd)
 # specify number of parallel tasks in building 
 PARALLEL_BUILD?=-j1
 #                                      (number of cores you can use for compiling)
-WGET := wget -c                      # wget command
-CMAKE := $(INSTALL_DIR)/bin/cmake    # where to find CMAKE (allow for over-ride)
+WGET := wget --tries=3 --retry-connrefused -c   # wget command
+CMAKE := $(INSTALL_DIR)/bin/cmake               # where to find CMAKE (allow for over-ride)
 
 # define output directories used by the build/install process
 output_dirs := $(BUILD_DIR)/src \
