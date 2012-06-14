@@ -602,7 +602,7 @@ $(BUILD_DIR)/src/arguments-$(ARGUMENTS_VER).tar.gz :
  -O $(BUILD_DIR)/src/arguments-$(ARGUMENTS_VER).tar.gz
 
 $(BUILD_DIR)/src/pcre-$(PCRE_VER).tar.gz :
-	$(WGET) http://downloads.sourceforge.net/project/pcre/pcre/$(PCRE_VER)/pcre-$(PCRE_VER).tar.gz \
+	$(WGET) http://sourceforge.net/projects/pcre/files/pcre/$(PCRE_VER)/pcre-$(PCRE_VER).tar.gz \
  -O $(BUILD_DIR)/src/pcre-$(PCRE_VER).tar.gz
 
 $(BUILD_DIR)/src//pcre++-$(PCREPP_VER).tar.gz :
@@ -1085,7 +1085,7 @@ $(scipy) : $(BUILD_DIR)/src/scipy-$(SCIPY_VER)
 
 $(R) : $(BUILD_DIR)/src/R-$(R_VER)
 	cd $(BUILD_DIR)/src/R-$(R_VER) && \
-	./configure --prefix=$(INSTALL_DIR) --libdir=$(INSTALL_DIR)/lib/ && \
+	./configure --prefix=$(INSTALL_DIR) --libdir=$(INSTALL_DIR)/lib/ --enable-R-shlib && \
 	make clean   && \
 	make $(PARALLEL_BUILD)  && \
 	make install
