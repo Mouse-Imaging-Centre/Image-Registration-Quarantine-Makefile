@@ -1,97 +1,112 @@
 # =============================================================================
-# Vlad's minc tools builder script
-#
-# PURPOSE: Build ALL or a subset of the MNI-BIC tools 
-#
+# Script based on Vladimir Fonov's minc tools builder script, that in addition
+# to the minc tools, also installs software neccessary to run the Mouse Imaging
+# Centre (MICe) registration software
+# 
+# MAIN WEBSITE:
+# https://wiki.phenogenomics.ca/display/MICePub/Building+a+registration+quarantine
+# 
+# PURPOSE: Build ALL or a subset of the MNI-BIC tools and MICe registration
+# software
+# 
 # DETAILS:
-#     This script is supposed to download one or more packages, and the build em.
+# This script is supposed to download one or more packages, and the build em.
 # Now since one may not always want to compile the kitchen sink, Vlad has
 # conveniently provided an assortment of tagets which will permit you to
-# build various subsets of the totality.  Here are some options:
-#
+# build various subsets of the totality. Here are some options:
+# 
 # (a) make minc-full
-#     -> this makes a bunch of stuff (but not ALL, ... not really)
-#     -> for those of you who don't like reading Makefiles, "minc-full" 
-#        includes: netcdf, hdf5, minc,
-#                  bicpl, N3, conglomerate, glim_image, mni_autoreg,
-#                  mincblob, mni_perllib, ray_trace, mincbet
-#
+# -> this makes a bunch of stuff (but not ALL, ... not really)
+# -> for those of you who don't like reading Makefiles, "minc-full"
+# includes: netcdf, hdf5, minc,
+# bicpl, N3, conglomerate, glim_image, mni_autoreg,
+# mincblob, mni_perllib, ray_trace, mincbet
+# 
 # (b) make minc-only
-#     -> just makes minc and dependencies (netcdf, hdf5)
-#
+# -> just makes minc and dependencies (netcdf, hdf5)
+# 
 # (c) make minc-with-itk
-#     -> just like it sounds: minc + itk + ezminc
-#      
+# -> just like it sounds: minc + itk + ezminc
+# 
 # (d) make visual
-#     -> make the visualization programs: register + Display + postf
-#     -> I suspect that these have been segregated from the "all" build
-#        since these programs are trickier to build ... i.e. more 
-#        dependencies, therefore more to go wrong.
-#
-#
-#
-#
+# -> make the visualization programs: register + Display + postf
+# -> I suspect that these have been segregated from the "all" build
+# since these programs are trickier to build ... i.e. more
+# dependencies, therefore more to go wrong.
+# 
+# (e) make full-MICe-quarantine
+# -> makes basically all. There are still a couple of packages that need to be
+# installed seperately. For more information see:
+# https://wiki.phenogenomics.ca/display/MICePub/Building+a+registration+quarantine
+# 
+# 
 # EXAMPLES:
-#
-# [A] >> make minc-only INSTALL_DIR=`realpath install_dir`  BUILD_DIR=`realpath build_dir`
-#
+# 
+# [A] >> make minc-only INSTALL_DIR=`realpath install_dir` BUILD_DIR=`realpath build_dir`
+# 
 # Notes --
-# (1) we are building a relatively small install comprising minc (and dependencies) only 
+# (1) we are building a relatively small install comprising minc (and dependencies) only
 # (2) INSTALL_DIR = the directory root to which you expect the built packages
-#     to be installed. For example, this could be "/usr/local/bic" ... but if
-#     it is, you had better be running as root. Default is the current dir.
+# to be installed. For example, this could be "/usr/local/bic" ... but if
+# it is, you had better be running as root. Default is the current dir.
 # (3) we use the "realpath" program to expand out my local dir (eg. "install_dir")
-#     into a full absolute path name. It would appear as if this Makefile does not
-#     like relative paths. If on Debian/Ubuntu, type "sudo apt-get realpath".
-# (4) BUILD_DIR is a temporary build directory. Feel free to wipe it out when 
-#     the build is complete. Default is the current dir.
-#
-#
-# [B] >>make minc-with-itk INSTALL_DIR=`realpath install_dir`  BUILD_DIR=`realpath build_dir`
-#
-# Notes -- 
+# into a full absolute path name. It would appear as if this Makefile does not
+# like relative paths. If on Debian/Ubuntu, type "sudo apt-get realpath".
+# (4) BUILD_DIR is a temporary build directory. Feel free to wipe it out when
+# the build is complete. Default is the current dir.
+# 
+# 
+# [B] >>make minc-with-itk INSTALL_DIR=`realpath install_dir` BUILD_DIR=`realpath build_dir`
+# 
+# Notes --
 # (1) the same as above, but add ezminc, itk, and their dependencies
-#
-#
-# [C] >>make minc-full INSTALL_DIR=`realpath install_dir`  BUILD_DIR=`realpath build_dir` PARALLEL_BUILD=-j2
-#     >>make visual INSTALL_DIR=`realpath install_dir`  BUILD_DIR=`realpath build_dir`
-#     >>make models  INSTALL_DIR=`realpath install_dir`  BUILD_DIR=`realpath build_dir`
-#
-# Notes -- 
+# 
+# 
+# [C] >>make minc-full INSTALL_DIR=`realpath install_dir` BUILD_DIR=`realpath build_dir` PARALLEL_BUILD=-j2
+# >>make visual INSTALL_DIR=`realpath install_dir` BUILD_DIR=`realpath build_dir`
+# >>make models INSTALL_DIR=`realpath install_dir` BUILD_DIR=`realpath build_dir`
+# 
+# Notes --
 # (1) make all ... and use up to 2 cores
 # (2) make register, Display and postf (needs the previous make to finish first)
-#     NB: currently (20May2011) Display needs to have its final link line corrected in order
-#         to produce an executable
+# NB: currently (20May2011) Display needs to have its final link line corrected in order
+# to produce an executable
 # (3) install a whack of MNI-BIC models for use with mritotal, etc.
-#
-#
+# 
+# 
 # DEPENDENCIES:
-#  Ubuntu Lucid 10.04 LTS
-#     (i) You do not want nor need netcdf or hdf5 from the repos, as we build  
-#         these from source. If these are around, get rid of them if you can,
-#         else linking could end of grabbing the wrong version
-#    (ii) apt-get the following before you start:
-#         -> build-essential (for compilers, make, etc)
-#         -> realpath (see above)
-#         -> zlib1g-dev (minc)
-#         -> bison (minc)
-#         -> flex (minc)
-#         -> libx11-dev (ray-trace)
-#         -> glutg3-dev (ray-trace)
-#         -> libxmu-dev, libxi-dev (ray-trace)
-#
-#  sudo apt-get install build-essential realpath \
-#                       zlib1g-dev bison flex \
-#                       libx11-dev glutg3-dev libxmu-dev libxi-dev
-#
-#  
-#  Ubuntu 11.04 
-#  
-#  sudo apt-get install build-essential realpath \
-#                       zlib1g-dev bison flex \
-#                       libx11-dev glutg3-dev libxmu-dev libxi-dev \
-#                       automake libtool
-#  
+# 
+# 
+# For the most up-to-date dependencies, please refer to the website:
+# https://wiki.phenogenomics.ca/display/MICePub/Building+a+registration+quarantine
+# 
+# 
+# Ubuntu Lucid 10.04 LTS
+# (i) You do not want nor need netcdf or hdf5 from the repos, as we build
+# these from source. If these are around, get rid of them if you can,
+# else linking could end of grabbing the wrong version
+# (ii) apt-get the following before you start:
+# -> build-essential (for compilers, make, etc)
+# -> realpath (see above)
+# -> zlib1g-dev (minc)
+# -> bison (minc)
+# -> flex (minc)
+# -> libx11-dev (ray-trace)
+# -> glutg3-dev (ray-trace)
+# -> libxmu-dev, libxi-dev (ray-trace)
+# 
+# sudo apt-get install build-essential realpath \
+# zlib1g-dev bison flex \
+# libx11-dev glutg3-dev libxmu-dev libxi-dev
+# 
+# 
+# Ubuntu 11.04
+# 
+# sudo apt-get install build-essential realpath \
+# zlib1g-dev bison flex \
+# libx11-dev glutg3-dev libxmu-dev libxi-dev \
+# automake libtool
+# 
 # =============================================================================
 #
 
