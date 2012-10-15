@@ -1,3 +1,7 @@
+2012-10-15 Matthijs van Eede <matthijs@phenogenomics.ca>
+  * went from mice-minc-tools to minc-stuffs (on Github). The latest version of mice-minc-tools (0.2) had a major
+    bug in minc_displacement
+
 2012-06-14 Matthijs van Eede <matthijs@phenogenomics.ca>
   * changed the source location of PCRE 8.12 (thanks to Kieran Short)
   * added --enable-R-shlib to the configure command of R to allow GUI software (such as Rstudio) to work with R (thanks to Kieran Short)

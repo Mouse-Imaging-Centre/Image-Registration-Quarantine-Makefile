@@ -216,7 +216,8 @@ BICINVENTOR_VER         := 0.3.1
 LAPLACIAN_THICKNESS_VER := 1.1.2
 MINCANTS_VER            := 1p9_p1
 MINCANTS_VER_SHORT      := 1p9
-MICE_MINC_TOOLS_VER     := 0.2
+#MICE_MINC_TOOLS_VER     := 0.2
+# mice-mince-tools has been replaced by minc-stuffs from GitHub
 MOUSE_THICKNESS_VER     := 0.1
 PERL_TEST_FILES_VER     := 0.14
 PMP_VER                 := 0.7.10
@@ -287,7 +288,6 @@ $(BUILD_DIR)/src/mni_autoreg_model-$(MNI_AUTOREG_MODEL_VER).tar.gz \
 $(BUILD_DIR)/src/bicInventor-$(BICINVENTOR_VER).tar.gz \
 $(BUILD_DIR)/src/laplacian_thickness-$(LAPLACIAN_THICKNESS_VER).tar.gz \
 $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER).tar.gz \
-$(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz \
 $(BUILD_DIR)/src/mouse-thickness-$(MOUSE_THICKNESS_VER).tar.gz \
 $(BUILD_DIR)/src/Test-Files-$(PERL_TEST_FILES_VER).tar.gz \
 $(BUILD_DIR)/src/PMP-$(PMP_VER).tar.gz \
@@ -302,6 +302,7 @@ $(BUILD_DIR)/src/Quarter-$(QUARTER_VER).tar.gz \
 $(BUILD_DIR)/src/brain-view2-$(BRAIN_VIEW2_VER).tar.gz
 
 # $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz \
+# $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz \
 
 # *****************************************************************************
 # Install target files
@@ -350,7 +351,8 @@ pcrepp         := $(INSTALL_DIR)/lib/libpcre++.a
 bicinventor         := $(INSTALL_DIR)/lib/libbicInventor.a $(INSTALL_DIR)/bin/iv2bicobj
 laplacian_thickness := $(INSTALL_DIR)/bin/laplacian_thickness
 mincANTS            := $(INSTALL_DIR)/bin/mincANTS
-mice_minc_tools     := $(INSTALL_DIR)/bin/minc_displacement $(INSTALL_DIR)/bin/lin_from_nlin
+#mice_minc_tools     := $(INSTALL_DIR)/bin/minc_displacement $(INSTALL_DIR)/bin/lin_from_nlin
+minc_stuffs         := $(INSTALL_DIR)/bin/minc_displacement $(INSTALL_DIR)/bin/lin_from_nlin
 mouse_thickness     := $(INSTALL_DIR)/bin/MICe_thickness
 perl_test_files     := $(INSTALL_DIR)/perl/Test/Files.pm
 pmp                 := $(INSTALL_DIR)/perl/PMP/PMP.pm
@@ -400,7 +402,7 @@ models : $(output_dirs) mni-models_average305-lin \
 
 minc-extra : $(output_dirs) fftw getopt_tabular oobicpl pcre pcrepp 
 
-MICe : $(output_dirs) coin3d bicinventor mincANTS mice_minc_tools mouse_thickness perl_test_files python pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
+MICe : $(output_dirs) coin3d bicinventor mincANTS minc_stuffs mouse_thickness perl_test_files python pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
 
 MICe-fuzzy: $(output_dirs) laplacian_thickness pmp MBM 
 
@@ -452,7 +454,8 @@ mni_autoreg_model : $(mni_autoreg_model)
 bicinventor: $(output_dirs) $(bicinventor)
 laplacian_thickness : $(output_dirs) $(laplacian_thickness)
 mincANTS : $(output_dirs) $(mincANTS)
-mice_minc_tools : $(output_dirs) $(mice_minc_tools)
+#mice_minc_tools : $(output_dirs) $(mice_minc_tools)
+minc_stuffs : $(output_dirs) $(minc_stuffs)
 mouse_thickness : $(output_dirs) $(mouse_thickness)
 perl_test_files : $(output_dirs) $(perl_test_files)
 pmp : $(output_dirs) $(pmp)
@@ -690,9 +693,9 @@ $(BUILD_DIR)/src/mincANTS_$(MINCANTS_VER).tar.gz :
 	$(WGET) --no-check-certificate https://wiki.phenogenomics.ca/download/attachments/1868718/patch_WarpVTKPolyDataMultiTransform_issue.diff \
  -O $(BUILD_DIR)/src/patch_WarpVTKPolyDataMultiTransform_issue.diff
 
-$(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz :
-	$(WGET) --no-check-certificate https://wiki.phenogenomics.ca/download/attachments/1868718/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz \
- -O $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz
+# $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz :
+# 	$(WGET) --no-check-certificate https://wiki.phenogenomics.ca/download/attachments/1868718/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz \
+#  -O $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz
 
 $(BUILD_DIR)/src/mouse-thickness-$(MOUSE_THICKNESS_VER).tar.gz :
 	$(WGET) --no-check-certificate https://wiki.phenogenomics.ca/download/attachments/1868718/mouse-thickness-$(MOUSE_THICKNESS_VER).tar.gz \
@@ -1030,11 +1033,20 @@ $(laplacian_thickness) : $(BUILD_DIR)/src/laplacian_thickness-$(LAPLACIAN_THICKN
 	make $(PARALLEL_BUILD)  && \
 	make install 
 
-$(mice_minc_tools) : $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER)
-	cd $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER) && \
-	./autogen.sh && \
+# $(mice_minc_tools) : $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER)
+# 	cd $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER) && \
+# 	./autogen.sh && \
+# 	./configure --prefix=$(INSTALL_DIR) --with-build-path=$(INSTALL_DIR) --with-minc2 && \
+# 	make clean   && \
+# 	make $(PARALLEL_BUILD)  && \
+# 	make install
+
+$(minc_stuffs) : 
+	cd $(BUILD_DIR)/src/ && \
+	if [ ! -d minc-stuffs ]; then git clone https://github.com/mfriedel/minc-stuffs.git minc-stuffs; else echo minc-stuffs directory exists already; fi && \
+	cd minc-stuffs; git checkout -b commit-version-b938f80dcd b938f80dcd9c7e82eb008412f409d4754443b0a3; ./autogen.sh &&\
 	./configure --prefix=$(INSTALL_DIR) --with-build-path=$(INSTALL_DIR) --with-minc2 && \
-	make clean   && \
+	make clean && \
 	make $(PARALLEL_BUILD)  && \
 	make install 
 
