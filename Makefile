@@ -402,7 +402,7 @@ models : $(output_dirs) mni-models_average305-lin \
 
 minc-extra : $(output_dirs) fftw getopt_tabular oobicpl pcre pcrepp 
 
-MICe : $(output_dirs) coin3d bicinventor mincANTS minc_stuffs mouse_thickness perl_test_files python pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
+MICe : $(output_dirs) coin3d bicinventor mincANTS  mouse_thickness perl_test_files python minc_stuffs pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
 
 MICe-fuzzy: $(output_dirs) laplacian_thickness pmp MBM 
 
