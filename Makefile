@@ -1048,7 +1048,9 @@ $(minc_stuffs) :
 	./configure --prefix=$(INSTALL_DIR) --with-build-path=$(INSTALL_DIR) --with-minc2 && \
 	make clean && \
 	make $(PARALLEL_BUILD)  && \
-	make install 
+	make install &&\
+        $(INSTALL_DIR)/bin/python setup.py install \
+        --prefix=$(INSTALL_DIR) --install-lib=$(INSTALL_DIR)/python 
 
 $(mouse_thickness) : $(BUILD_DIR)/src/mouse-thickness-$(MOUSE_THICKNESS_VER)
 	cd $(BUILD_DIR)/src/mouse-thickness-$(MOUSE_THICKNESS_VER) && \
