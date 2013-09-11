@@ -746,7 +746,7 @@ $(BUILD_DIR)/src/tagtoxfm_bspline_$(TAGTOXFM_BSPLINE_VER).tar.gz :
  -O $(BUILD_DIR)/src/tagtoxfm_bspline_$(TAGTOXFM_BSPLINE_VER).tar.gz
 
 $(BUILD_DIR)/src/Coin-$(COIN_3D_VER).tar.gz :
-	$(WGET) http://ftp.coin3d.org/coin/src/all/Coin-$(COIN_3D_VER).tar.gz \
+	$(WGET) https://bitbucket.org/Coin3D/coin/downloads/Coin-$(COIN_3D_VER).tar.gz \
  -O $(BUILD_DIR)/src/Coin-$(COIN_3D_VER).tar.gz
 
 $(BUILD_DIR)/src/Quarter-$(QUARTER_VER).tar.gz :
