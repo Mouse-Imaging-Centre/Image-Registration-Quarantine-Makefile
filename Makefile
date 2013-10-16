@@ -177,45 +177,28 @@ output_dirs := $(BUILD_DIR)/src \
 # Package versions
 # *****************************************************************************
 #
-NETCDF_VER       := 4.0.1
-HDF5_VER         := 1.8.7
-#MINC_VER         := 9e69692
-MINC_VER         := 90b5d40
-BICPL_VER        := 1.4.6
-EBTKS_VER        := 1.6.4
-OOBICPL_VER      := 0.4.4
-N3_VER           := 1.12.0
-CLASSIFY_VER     := 1.1.0
-CONGLOMERATE_VER := 1.6.6
-MNI_AUTOREG_VER  := 0.99.6
-MNI_PERLLIB_VER  := 0.08
-MINCBLOB_VER     := 1.2.1
-MINCMORPH_VER    := 1.4
-RAYTRACE_VER     := 1.0.3
-GLIMIMAGE_VER    := 1.2
-ITK_VER          := 3.20.0
-FFTW_VER         := 3.2.2
+#NETCDF_VER       := 4.0.1
+HDF5_VER         := 1.8.10-patch1
 CMAKE_VER        := 2.8.4
-GSL_VER          := 1.15
-GETOPT_TABULAR_VER := 0.3
-EZMINC_VER       := 92519b5
+
+MINC_TOOLKIT_VER := d971afe
+#ITK_VER          := 3.20.0
+#FFTW_VER         := 3.2.2
+#GSL_VER          := 1.15
+#GETOPT_TABULAR_VER := 0.3
 NETPBM_VER       := 10.35.74
-VTK_VER          := 5.6.1
-FLTK_VER         := 1.3.x-r7725
-REGISTER_VER     := 1.4.0
-DISPLAY_VER      := 1.5.0
-POSTF_VER        := 1.0.03
-INORMALIZE_VER   := 1.0.2
-ARGUMENTS_VER    := 0.2.1
-PCRE_VER         := 8.12
-PCREPP_VER       := 0.9.5
+#VTK_VER          := 5.6.1
+#FLTK_VER         := 1.3.x-r7725
+#PCRE_VER         := 8.12
+#PCREPP_VER       := 0.9.5
+
 #
 # The ones added for the MICe quarantine
 #
 BICINVENTOR_VER         := 0.3.1
 LAPLACIAN_THICKNESS_VER := 1.1.2
-MINCANTS_VER            := 1p9_p1
-MINCANTS_VER_SHORT      := 1p9
+#MINCANTS_VER            := 1p9_p1
+#MINCANTS_VER_SHORT      := 1p9
 #MICE_MINC_TOOLS_VER     := 0.2
 # mice-mince-tools has been replaced by minc-stuffs from GitHub
 MOUSE_THICKNESS_VER     := 0.1
@@ -345,6 +328,7 @@ inormalize     := $(INSTALL_DIR)/bin/inormalize
 arguments      := $(INSTALL_DIR)/lib/libarguments.a
 pcre           := $(INSTALL_DIR)/lib/libpcre.a
 pcrepp         := $(INSTALL_DIR)/lib/libpcre++.a
+minctoolkit    := $(INSTALL_DIR)/lib/libminc2.a $(INSTALL_DIR)/include/minc2.h
 #
 # The ones added for the MICe quarantine
 #
@@ -403,6 +387,8 @@ models : $(output_dirs) mni-models_average305-lin \
 minc-extra : $(output_dirs) fftw getopt_tabular oobicpl pcre pcrepp 
 
 MICe : $(output_dirs) coin3d bicinventor mincANTS  mouse_thickness perl_test_files python minc_stuffs pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
+
+MICe-ubuntu-precise : $(output_dirs) hdf5 minctoolkit
 
 MICe-fuzzy: $(output_dirs) laplacian_thickness pmp MBM 
 
@@ -471,6 +457,7 @@ tagtoxfm_bspline : $(output_dirs) $(tagtoxfm_bspline)
 coin3d : $(output_dirs) $(coin3d)
 quarter: $(output_dirs) $(quarter)
 brain_view2 : $(output_dirs) $(brain_view2)
+minctoolkit : $(output_dirs) $(MINC_TOOLKIT)
 #
 # end of added for MICe
 #
@@ -528,7 +515,7 @@ $(BUILD_DIR)/src/netcdf-$(NETCDF_VER).tar.gz :
  -O $(BUILD_DIR)/src/netcdf-$(NETCDF_VER).tar.gz
 
 $(BUILD_DIR)/src/hdf5-$(HDF5_VER).tar.gz : 
-	$(WGET) http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.7/src/hdf5-$(HDF5_VER).tar.gz \
+	$(WGET) http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-$(HDF5_VER)/src/hdf5-$(HDF5_VER).tar.gz \
  -O $(BUILD_DIR)/src/hdf5-$(HDF5_VER).tar.gz
 
 $(BUILD_DIR)/src/mcvaneede-minc-$(MINC_VER).tar.gz : 
@@ -789,10 +776,8 @@ $(netcdf) : $(BUILD_DIR)/src/netcdf-$(NETCDF_VER)
 $(hdf5) : $(BUILD_DIR)/src/hdf5-$(HDF5_VER)
 	cd $(BUILD_DIR)/src/hdf5-$(HDF5_VER) && \
 	./configure --prefix=$(INSTALL_DIR) \
-	            --with-pic \
 	            --enable-cxx \
-	            --disable-fortran  \
-	            --disable-hl && \
+	            --enable-shared && \
 	make clean && \
 	make $(PARALLEL_BUILD) && \
 	make install && \
@@ -1138,6 +1123,11 @@ $(RMINC) :
 	$(INSTALL_DIR)/bin/R CMD INSTALL rminc \
 	--configure-args="--with-build-path=$(INSTALL_DIR)" && \
 	unset LD_LIBRARY_PATH
+
+$(MINC_TOOLKIT) :
+	cd $(BUILD_DIR)/src/ && \
+	if [ ! -d minc-toolkit ]; then git clone https://github.com/BIC-MNI/minc-toolkit/tree/$(MINC_TOOLKIT_VER) minc-toolkit; else echo minc-toolkit directory exists already; fi && \
+	mkdir minc-toolkit-build;
 
 
 $(MBM) : $(BUILD_DIR)/src/MBM-$(MBM_VER)
