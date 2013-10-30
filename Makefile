@@ -180,7 +180,6 @@ output_dirs := $(BUILD_DIR)/src \
 #NETCDF_VER       := 4.0.1
 HDF5_VER         := 1.8.10-patch1
 CMAKE_VER        := 2.8.4
-
 MINC_TOOLKIT_VER := d971afe
 #ITK_VER          := 3.20.0
 #FFTW_VER         := 3.2.2
@@ -191,7 +190,6 @@ NETPBM_VER       := 10.35.74
 #FLTK_VER         := 1.3.x-r7725
 #PCRE_VER         := 8.12
 #PCREPP_VER       := 0.9.5
-
 #
 # The ones added for the MICe quarantine
 #
@@ -298,7 +296,7 @@ $(BUILD_DIR)/src/brain-view2-$(BRAIN_VIEW2_VER).tar.gz
 #
 netcdf         := $(INSTALL_DIR)/lib/libnetcdf.a $(INSTALL_DIR)/include/netcdf.h
 hdf5           := $(INSTALL_DIR)/lib/libhdf5.a $(INSTALL_DIR)/include/hdf5.h
-minc           := $(INSTALL_DIR)/lib/libminc2.a $(INSTALL_DIR)/include/minc2.h
+#minc           := $(INSTALL_DIR)/lib/libminc2.a $(INSTALL_DIR)/include/minc2.h
 fftw           := $(INSTALL_DIR)/lib/libfftw3f.a $(INSTALL_DIR)/include/fftw3.h
 gsl            := $(INSTALL_DIR)/lib/libgsl.a $(INSTALL_DIR)/include/gsl/gsl_math.h
 bicpl          := $(INSTALL_DIR)/lib/libbicpl.a $(INSTALL_DIR)/include/bicpl.h
@@ -328,7 +326,8 @@ inormalize     := $(INSTALL_DIR)/bin/inormalize
 arguments      := $(INSTALL_DIR)/lib/libarguments.a
 pcre           := $(INSTALL_DIR)/lib/libpcre.a
 pcrepp         := $(INSTALL_DIR)/lib/libpcre++.a
-minctoolkit    := $(INSTALL_DIR)/lib/libminc2.a $(INSTALL_DIR)/include/minc2.h
+#minctoolkit    := $(INSTALL_DIR)/lib/libminc2.a $(INSTALL_DIR)/include/minc2.h
+minctoolkit    := $(INSTALL_DIR)/src/minctoolkit-build
 #
 # The ones added for the MICe quarantine
 #
@@ -388,7 +387,7 @@ minc-extra : $(output_dirs) fftw getopt_tabular oobicpl pcre pcrepp
 
 MICe : $(output_dirs) coin3d bicinventor mincANTS  mouse_thickness perl_test_files python minc_stuffs pyminc numpy scipy R xfmavg RMINC tagtoxfm_bspline quarter brain_view2
 
-MICe-ubuntu-precise : $(output_dirs) hdf5 minctoolkit
+MICe-ubuntu-precise : $(output_dirs) $(hdf5) $(minctoolkit)
 
 MICe-fuzzy: $(output_dirs) laplacian_thickness pmp MBM 
 
@@ -457,7 +456,7 @@ tagtoxfm_bspline : $(output_dirs) $(tagtoxfm_bspline)
 coin3d : $(output_dirs) $(coin3d)
 quarter: $(output_dirs) $(quarter)
 brain_view2 : $(output_dirs) $(brain_view2)
-minctoolkit : $(output_dirs) $(MINC_TOOLKIT)
+#minctoolkit : $(output_dirs) $(minctoolkit)
 #
 # end of added for MICe
 #
@@ -1124,10 +1123,26 @@ $(RMINC) :
 	--configure-args="--with-build-path=$(INSTALL_DIR)" && \
 	unset LD_LIBRARY_PATH
 
-$(MINC_TOOLKIT) :
+$(minctoolkit) : 
+	echo && \
+	echo && \
+	echo && \
+	echo " MINCTOOLKIT " && \
+	echo && \
+	echo && \
+	echo && \
+	git config --global url."https://".insteadOf git://
 	cd $(BUILD_DIR)/src/ && \
-	if [ ! -d minc-toolkit ]; then git clone https://github.com/BIC-MNI/minc-toolkit/tree/$(MINC_TOOLKIT_VER) minc-toolkit; else echo minc-toolkit directory exists already; fi && \
-	mkdir minc-toolkit-build;
+	if [ ! -d minc-toolkit ]; then git clone --recursive https://github.com/BIC-MNI/minc-toolkit minc-toolkit; cd minc-toolkit; git checkout -b new_branch $(MINC_TOOLKIT_VER); cd .. ; else echo minc-toolkit directory exists already; fi && \
+	mkdir minc-toolkit-build; cd  minc-toolkit-build && \
+	cmake -D CMAKE_INSTALL_PREFIX:PATH=$(INSTALL_DIR) -D MT_BUILD_ITK_TOOLS:BOOL=ON -D MT_BUILD_SHARED_LIBS:BOOL=ON -D MT_BUILD_VISUAL_TOOLS:BOOL=ON -D USE_SYSTEM_HDF5:BOOL=ON -D MT_BUILD_MINC_ANTS:BOOL=ON -D HDF5_INCLUDE_DIR:PATH=$(INSTALL_DIR)/include/ -D HDF5_LIBRARY:PATH=$(INSTALL_DIR)/lib/libhdf5.so  $(BUILD_DIR)/src/minc-toolkit && \
+	make clean && \
+	make CMakeFiles/Makefile2 NETCDF && \
+	make CMakeFiles/Makefile2 ZLIB && \
+	make CMakeFiles/Makefile2 PCRE && \
+	make && \
+	make install
+
 
 
 $(MBM) : $(BUILD_DIR)/src/MBM-$(MBM_VER)
