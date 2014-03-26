@@ -198,7 +198,7 @@ FFTW_VER         := 3.2.2
 CMAKE_VER        := 2.8.4
 GSL_VER          := 1.15
 GETOPT_TABULAR_VER := 0.3
-EZMINC_VER       := 92519b5
+EZMINC_VER       := 2.1.13
 NETPBM_VER       := 10.35.74
 VTK_VER          := 5.6.1
 FLTK_VER         := 1.3.x-r7725
@@ -270,7 +270,6 @@ $(BUILD_DIR)/src/fftw-$(FFTW_VER).tar.gz \
 $(BUILD_DIR)/src/cmake-$(CMAKE_VER).tar.gz \
 $(BUILD_DIR)/src/gsl-$(GSL_VER).tar.gz \
 $(BUILD_DIR)/src/Getopt-Tabular-$(GETOPT_TABULAR_VER).tar.gz \
-$(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER).tar.gz  \
 $(BUILD_DIR)/src/netpbm-$(NETPBM_VER).tar.gz \
 $(BUILD_DIR)/src/Register-$(REGISTER_VER).tar.gz \
 $(BUILD_DIR)/src/Display-$(DISPLAY_VER).tar.gz \
@@ -301,6 +300,7 @@ $(BUILD_DIR)/src/Coin-$(COIN_3D_VER).tar.gz \
 $(BUILD_DIR)/src/Quarter-$(QUARTER_VER).tar.gz \
 $(BUILD_DIR)/src/brain-view2-$(BRAIN_VIEW2_VER).tar.gz
 
+# $(BUILD_DIR)/src/EZminc-ezminc-$(EZMINC_VER).tar.gz  \
 # $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz \
 # $(BUILD_DIR)/src/mice-minc-tools-$(MICE_MINC_TOOLS_VER).tar.gz \
 
@@ -482,7 +482,7 @@ brain_view2 : $(output_dirs) $(brain_view2)
 #
 # *****************************************************************************
 #
-$(BUILD_DIR)/src/ezminc :  $(BUILD_DIR)/src/ezminc-$(EZMINC_VER).tar.gz  
+$(BUILD_DIR)/src/ezminc :  $(BUILD_DIR)/src/EZminc-ezminc-$(EZMINC_VER).tar.gz  
 	cd $(BUILD_DIR)/src && tar zxf  $<
 	touch $@
 
@@ -627,9 +627,9 @@ $(BUILD_DIR)/src//pcre++-$(PCREPP_VER).tar.gz :
 	$(WGET) http://www.daemon.de/idisk/Apps/pcre++/pcre++-$(PCREPP_VER).tar.gz \
  -O $(BUILD_DIR)/src//pcre++-$(PCREPP_VER).tar.gz
 
-$(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER).tar.gz : 
-	$(WGET) --no-check-certificate https://github.com/vfonov/EZminc/tarball/92519b508742e8a37a82 \
- -O $(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER).tar.gz
+$(BUILD_DIR)/src/EZminc-ezminc-$(EZMINC_VER).tar.gz : 
+	$(WGET) --no-check-certificate https://github.com/BIC-MNI/EZminc/archive/ezminc-$(EZMINC_VER).tar.gz \
+ -O $(BUILD_DIR)/src/EZminc-ezminc-$(EZMINC_VER).tar.gz
 
 $(BUILD_DIR)/src/netpbm-$(NETPBM_VER).tar.gz : 
 	$(WGET) 'http://downloads.sourceforge.net/project/netpbm/super_stable/$(NETPBM_VER)/netpbm-$(NETPBM_VER).tgz?use_mirror=cdnetworks-us-1' \
@@ -710,7 +710,7 @@ $(BUILD_DIR)/src/Test-Files-$(PERL_TEST_FILES_VER).tar.gz :
 #  -O $(BUILD_DIR)/src/PMP-$(PMP_VER).tar.gz
 
 $(BUILD_DIR)/src/Python-$(PYTHON_VER).tgz : 
-	$(WGET) http://www.python.org/ftp/python/$(PYTHON_VER)/Python-$(PYTHON_VER).tgz \
+	$(WGET) --no-check-certificate http://www.python.org/ftp/python/$(PYTHON_VER)/Python-$(PYTHON_VER).tgz \
  -O $(BUILD_DIR)/src/Python-$(PYTHON_VER).tgz
 
 $(BUILD_DIR)/src/pyminc-$(PYMINC_VER).tar.gz : 
@@ -730,7 +730,7 @@ $(BUILD_DIR)/src/R-$(R_VER).tar.gz :
  -O $(BUILD_DIR)/src/R-$(R_VER).tar.gz
 
 $(BUILD_DIR)/src/xfmavg :
-	$(WGET) http://packages.bic.mni.mcgill.ca/scripts/xfmavg \
+	$(WGET) http://repo.phenogenomics.ca/repo/for_matthijs/xfmavg \
  -O $(BUILD_DIR)/src/xfmavg
 
 $(BUILD_DIR)/src/RMINC-$(RMINC_VER).tar.gz :
@@ -1132,10 +1132,10 @@ $(xfmavg) : $(BUILD_DIR)/src/xfmavg
 
 $(RMINC) : 
 	cd $(BUILD_DIR)/src/ && \
-	if [ ! -d rminc ]; then git clone https://github.com/mcvaneede/RMINC.git rminc; else echo rminc directory exists already; fi && \
-	cd rminc; ./autogen.sh; cd .. && \
+	if [ ! -d RMINC ]; then git clone https://github.com/mcvaneede/RMINC.git RMINC; else echo RMINC directory exists already; fi && \
+	cd RMINC; git checkout R-2.15-minc-2.1.00; ./autogen.sh; cd .. && \
 	export LD_LIBRARY_PATH=$(INSTALL_DIR)/lib && \
-	$(INSTALL_DIR)/bin/R CMD INSTALL rminc \
+	$(INSTALL_DIR)/bin/R CMD INSTALL RMINC \
 	--configure-args="--with-build-path=$(INSTALL_DIR)" && \
 	unset LD_LIBRARY_PATH
 
@@ -1304,7 +1304,10 @@ $(vtk) : $(BUILD_DIR)/src/VTK
 	make $(PARALLEL_BUILD) && make install && \
 	touch $(vtk)
 
-$(ezminc) : $(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER) $(minc) $(itk) $(cmake) $(fftw) $(gsl)
+$(ezminc) :  $(minc) $(itk) $(cmake) $(fftw) $(gsl)
+	cd $(BUILD_DIR)/src/ && \
+	if [ ! -d ezminc ]; then git clone https://github.com/BIC-MNI/EZminc.git ezminc; else echo rminc directory exists already; fi && \
+	cd rminc; git checkout 92519b5; cd .. && \
 	cd $(BUILD_DIR)/src && \
 	rm -rf   build_ezminc && \
 	mkdir -p build_ezminc && \
@@ -1324,7 +1327,7 @@ $(ezminc) : $(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER) $(minc) $(itk) $(cmake)
       -D BUILD_DISTORTION_CORRECTION:BOOL=ON \
       -D BUILD_MINCNLM:BOOL=ON \
       -D BUILD_TOOLS:BOOL=ON \
-      $(BUILD_DIR)/src/vfonov-EZminc-$(EZMINC_VER) && \
+      $(BUILD_DIR)/src/ezminc && \
 	make $(PARALLEL_BUILD) && \
 	make install && \
 	touch $(ezminc)
