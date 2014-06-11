@@ -1306,8 +1306,8 @@ $(vtk) : $(BUILD_DIR)/src/VTK
 
 $(ezminc) :  $(minc) $(itk) $(cmake) $(fftw) $(gsl)
 	cd $(BUILD_DIR)/src/ && \
-	if [ ! -d ezminc ]; then git clone https://github.com/BIC-MNI/EZminc.git ezminc; else echo rminc directory exists already; fi && \
-	cd rminc; git checkout 92519b5; cd .. && \
+	if [ ! -d ezminc ]; then git clone https://github.com/BIC-MNI/EZminc.git ezminc; else echo ezminc directory exists already; fi && \
+	cd ezminc; git checkout 92519b5; cd .. && \
 	cd $(BUILD_DIR)/src && \
 	rm -rf   build_ezminc && \
 	mkdir -p build_ezminc && \
